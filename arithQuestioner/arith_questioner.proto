@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "./";
+
+package arithquestioner;
+
+service ArithQuestioner {
+    rpc QuestionChat(stream QuestionMessage) returns (stream QuestionMessage) {}
+}
+
+message QuestionMessage {
+    string message = 1;
+}
