@@ -1,4 +1,4 @@
-module github.com/icy-mountain/arith_questioner
+module github.com/icy-mountain/gRPC_trial
 
 go 1.18
 
