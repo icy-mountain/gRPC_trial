@@ -9,7 +9,6 @@ import (
 
 	pb "github.com/icy-mountain/gRPC_trial/arithQuestioner"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 )
 
 var (
@@ -21,7 +20,7 @@ var (
 )
 
 type arithQuestionerServer struct {
-	pb.UnimplementedRouteGuideServer
+	pb.UnimplementedArithQuestionerServer
 }
 
 func (s *arithQuestionerServer) QuestionChat(stream pb.ArithQuestioner_QuestionChatServer) error {
@@ -33,7 +32,7 @@ func (s *arithQuestionerServer) QuestionChat(stream pb.ArithQuestioner_QuestionC
 		if err != nil {
 			return err
 		}
-		sendMessage := in + "from server!"
+		sendMessage := in.String() + "from server!"
 		qm := &pb.QuestionMessage{Message: sendMessage}
 		if err := stream.Send(qm); err != nil {
 			return err
@@ -53,19 +52,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	var opts []grpc.ServerOption
-	if *tls {
-		if *certFile == "" {
-			*certFile = data.Path("x509/server_cert.pem")
-		}
-		if *keyFile == "" {
-			*keyFile = data.Path("x509/server_key.pem")
-		}
-		creds, err := credentials.NewServerTLSFromFile(*certFile, *keyFile)
-		if err != nil {
-			log.Fatalf("Failed to generate credentials %v", err)
-		}
-		opts = []grpc.ServerOption{grpc.Creds(creds)}
-	}
+
 	grpcServer := grpc.NewServer(opts...)
 	pb.RegisterArithQuestionerServer(grpcServer, newServer())
 	grpcServer.Serve(lis)
